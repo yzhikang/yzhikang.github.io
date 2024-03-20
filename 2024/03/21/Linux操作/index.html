@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linux操作 | yk1ng</title><meta name="author" content="yk1ng"><meta name="copyright" content="yk1ng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux操作系统学习简介Linux，全称GNU&#x2F;Linux，是一套免费使用和自由传播的类UNIX操作系统，其内核由林纳斯·本纳第克特·托瓦兹于1991年第一次释出，它主要受到Minix和Unix思想的启发，是一个基于POSIX和Unix的多用户、多任务、支持多线程和多CPU的操作系统。它能运行主要的Unix工具软件、应用程序和网络协议。它支持32位和64位硬件。Linux继承了Unix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux操作">
+<meta property="og:url" content="https://yzhikang.github.io/2024/03/21/Linux%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="yk1ng">
+<meta property="og:description" content="Linux操作系统学习简介Linux，全称GNU&#x2F;Linux，是一套免费使用和自由传播的类UNIX操作系统，其内核由林纳斯·本纳第克特·托瓦兹于1991年第一次释出，它主要受到Minix和Unix思想的启发，是一个基于POSIX和Unix的多用户、多任务、支持多线程和多CPU的操作系统。它能运行主要的Unix工具软件、应用程序和网络协议。它支持32位和64位硬件。Linux继承了Unix">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yzhikang.github.io/img/blog.png">
+<meta property="article:published_time" content="2024-03-20T16:20:14.000Z">
+<meta property="article:modified_time" content="2024-03-20T16:21:04.127Z">
+<meta property="article:author" content="yk1ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yzhikang.github.io/img/blog.png"><link rel="shortcut icon" href="/img/touxiang.png"><link rel="canonical" href="https://yzhikang.github.io/2024/03/21/Linux%E6%93%8D%E4%BD%9C/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: yk1ng","link":"链接: ","source":"来源: yk1ng","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux操作',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-21 00:21:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/blog.png')"><nav id="nav"><span id="blog-info"><a href="/" title="yk1ng"><span class="site-name">yk1ng</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux操作</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2024-03-20T16:20:14.000Z" title="发表于 2024-03-21 00:20:14">2024-03-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux操作"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux操作系统学习"><a href="#Linux操作系统学习" class="headerlink" title="Linux操作系统学习"></a>Linux操作系统学习</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Linux，全称GNU&#x2F;Linux，是一套免费使用和自由传播的类UNIX操作系统，其内核由林纳斯·本纳第克特·托瓦兹于1991年第一次释出，它主要受到Minix和Unix思想的启发，是一个基于POSIX和Unix的多用户、多任务、支持多线程和多CPU的操作系统。它能运行主要的Unix工具软件、应用程序和网络协议。它支持32位和64位硬件。Linux继承了Unix以网络为核心的设计思想，是一个性能稳定的多用户网络操作系统。Linux有上百种不同的发行版，如基于社区开发的debian、archlinux，和基于商业开发的Red Hat Enterprise Linux、SUSE、oracle linux等。</p>
+<h2 id="Linux中文件"><a href="#Linux中文件" class="headerlink" title="Linux中文件"></a>Linux中文件</h2><p><strong>Linux一切皆文件。</strong></p>
+<p>1.Linux使用过程中，有近一半以上的工作内容精力其实都是对文件的操作。</p>
+<p>2.Linux 本身也是一个基于文件形式表示的操作系统。</p>
+<p>①在Windows是文件的，在Linux下同样也是文件；</p>
+<p>②在Windows不是文件的，在Linux下也是以文件的形式存储的；</p>
+<p>对文件的操作<strong>创建文件、编辑文件、保存文件、关闭文件、重命名文件、删除文件、恢复文件。</strong></p>
+<p>注意：<strong>Linux中文件是没有扩展名（后缀名）这一说的，只是用来识别文件</strong></p>
+<h3 id="文件目录结构"><a href="#文件目录结构" class="headerlink" title="文件目录结构"></a>文件目录结构</h3><p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20230925233842407.png" alt="image-20230925233842407"></p>
+<p><strong>bin：</strong>含义是二进制，一般储存二进制文件（可运行）</p>
+<p><strong>dev：</strong>该目录中主要存放的是外接设备</p>
+<p><strong>etc：</strong>储存配置文件</p>
+<p><strong>home：</strong>表示“家”，表示<strong>除了root用户以外其他用户的家目录</strong>，类似于windows下的User&#x2F;用户目录。</p>
+<p><strong>proc：</strong>process，表示进程，该目录中存储的是Linux运行时候的进程。</p>
+<p><strong>root：</strong>该目录是root用户自己的家目录。</p>
+<p><strong>sbin：</strong>全称super binary，该目录也是存储一些可以被执行的二进制文件，但是必须得有super权限的用户才能执行。</p>
+<p><strong>tmp：</strong>表示“临时”的，当系统运行时候产生的临时文件会在这个目录存着。</p>
+<p><strong>usr：</strong>存放的是用户自己安装的软件。类似于windows下的program files。</p>
+<p><strong>var：</strong>存放的程序&#x2F;系统的日志文件的目录。 Mnt：当外接设备需要挂载的时候，就需要挂载到mnt目录下</p>
+<h3 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h3><h4 id="1-普通文件类型"><a href="#1-普通文件类型" class="headerlink" title="1.普通文件类型"></a>1.普通文件类型</h4><p>Linux中最多的一种文件类型, 包括 纯文本文件(ASCII)；二进制文件(binary)；数据格式的文件(data);各种压缩文件.第一个属性为 [-]</p>
+<h4 id="2-目录文件"><a href="#2-目录文件" class="headerlink" title="2.目录文件"></a>2.目录文件</h4><p>就是目录， 能用 # cd 命令进入的。第一个属性为 [d]，例如 [drwxrwxrw]</p>
+<h4 id="3-块设备文件"><a href="#3-块设备文件" class="headerlink" title="3.块设备文件"></a>3.块设备文件</h4><p>就是存储数据以供系统存取的接口设备，简单而言就是硬盘。例如一号硬盘的代码是 &#x2F;dev&#x2F;hda1等文件。第一个属性为 [b]</p>
+<h4 id="4-字符设备"><a href="#4-字符设备" class="headerlink" title="4.字符设备"></a>4.字符设备</h4><p>字符设备文件：即串行端口的接口设备，例如键盘、鼠标等等。第一个属性为 [c]</p>
+<h4 id="5-套接字文件"><a href="#5-套接字文件" class="headerlink" title="5.套接字文件"></a>5.套接字文件</h4><p>这类文件通常用在网络数据连接。可以启动一个程序来监听客户端的要求，客户端就可以通过套接字来进行数据通信。第一个属性为 [s]，最常在 &#x2F;var&#x2F;run目录中看到这种文件类型.</p>
+<h4 id="6-管道文件"><a href="#6-管道文件" class="headerlink" title="6.管道文件"></a>6.管道文件</h4><p>FIFO也是一种特殊的文件类型，它主要的目的是，解决多个程序同时存取一个文件所造成的错误。FIFO是first-in-first-out(先进先出)的缩写。第一个属性为 [p]</p>
+<h4 id="7-链接文件"><a href="#7-链接文件" class="headerlink" title="7.链接文件"></a>7.链接文件</h4><p>类似Windows下面的快捷方式。第一个属性为 [l]，例如 [lrwxrwxrw]</p>
+<p><img src="https://pic3.zhimg.com/80/v2-cbbfa3f4415b93e27cc4499b7b9fad3a_720w.webp" alt="img"></p>
+<h2 id="Linux对文件的操作"><a href="#Linux对文件的操作" class="headerlink" title="Linux对文件的操作"></a>Linux对文件的操作</h2><p><strong>一般命令格式：</strong>命令 [-选项] [参数]</p>
+<h3 id="1、pwd命令"><a href="#1、pwd命令" class="headerlink" title="1、pwd命令"></a>1、pwd命令</h3><p><strong>用法：#pwd （print working directory，打印查看当前工作目录）</strong></p>
+<p><img src="C:/Users/ASUS/AppData/Roaming/Typora/typora-user-images/image-20230925234525807.png" alt="image-20230925234525807"></p>
+<h3 id="2、ls命令"><a href="#2、ls命令" class="headerlink" title="2、ls命令"></a>2、ls命令</h3><h4 id="用法1：-ls"><a href="#用法1：-ls" class="headerlink" title="用法1：#ls"></a><strong>用法1：#ls</strong></h4><p>含义：列出当前工作目录下的所有文件&#x2F;文件夹的名称</p>
+<p><img src="C:/Users/ASUS/AppData/Roaming/Typora/typora-user-images/image-20230925234643675.png" alt="image-20230925234643675"></p>
+<h4 id="用法2：-ls-路径"><a href="#用法2：-ls-路径" class="headerlink" title="用法2：#ls +路径"></a><strong>用法2：#ls +路径</strong></h4><p>含义：列出指定路径下的所有文件&#x2F;文件夹的名称</p>
+<p><img src="C:/Users/ASUS/AppData/Roaming/Typora/typora-user-images/image-20230925234839921.png" alt="image-20230925234839921"></p>
+<p><strong>相对路径：</strong>相对首先得有一个参照物（一般就是当前的工作路径）；</p>
+<p>相对路径的写法：在相对路径中通常会用到2个符号“.&#x2F;”【表示当前目录下】、“..&#x2F;”【上一级目录下】。</p>
+<p><strong>绝对路径：</strong>绝对路径不需要参照物，直接从根“&#x2F;”开始寻找对应路径；</p>
+<h4 id="用法3：-ls-选项-路径"><a href="#用法3：-ls-选项-路径" class="headerlink" title="用法3：#ls 选项 路径"></a><strong>用法3：#ls 选项 路径</strong></h4><p>含义：在列出指定路径下的文件&#x2F;文件夹的名称，并以指定的格式进行显示。</p>
+<p>选项解释：</p>
+<p><strong>-l：表示list，表示以详细列表的形式进行展示</strong></p>
+<p><strong>-a：表示显示所有的文件&#x2F;文件夹（包含了隐藏文件&#x2F;文件夹）</strong></p>
+<p><strong>-h：以可读性较高的形式显示文件大小</strong></p>
+<h3 id="3、mkdir命令"><a href="#3、mkdir命令" class="headerlink" title="3、mkdir命令"></a>3、mkdir命令</h3><p><strong>指令：mkdir（make directory，创建目录）</strong></p>
+<p><strong>语法1：#mkdir 路径 【路径，可以是文件夹名称也可以是包含名称的一个完整路径】</strong></p>
+<p>案例1：在当前路径下创建出“yyy”目录（文件夹)</p>
+<p><img src="C:/Users/ASUS/AppData/Roaming/Typora/typora-user-images/image-20230925235243643.png" alt="image-20230925235243643"></p>
+<p>案例2：在指定路径(&#x2F;tmp&#x2F;)下创建出一个文件夹“f1”</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /home/yzk</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20230925235430640.png" alt="image-20230925235430640"></p>
+<p><strong>语法2：#mkdir -p 路径</strong></p>
+<p>含义：<strong>一次性创建多层目录</strong>，添加-p参数，否则会报错</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20230925235724989.png" alt="image-20230925235724989"></p>
+<h3 id="4、touch命令"><a href="#4、touch命令" class="headerlink" title="4、touch命令"></a>4、touch命令</h3><p>指令：touch</p>
+<p>作用：创建文件(mkdir创建的是目录touch创建的是文件)</p>
+<p>语法：**#touch 文件路径** 【路径可以是直接的文件名也可以是路径】</p>
+<p>案例1：使用touch来在当前路径下创建一个文件，命名为1.txt</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20230926000054218.png" alt="image-20230926000054218"></p>
+<p>案例2：使用touch在当前目录同时创建多个文件2.txt、3.txt、4.txt</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yzhikang/blog-pic/image-20230926000227097.png" alt="image-20230926000227097"></p>
+<p>案例3：使用touch在&#x2F;root&#x2F;f1指定目录中创建文件1.txt</p>
+<p><img src="C:/Users/ASUS/AppData/Roaming/Typora/typora-user-images/image-20230926000744947.png" alt="image-20230926000744947"></p>
+<p>注意：以“.”开头创建的文件名为隐藏文件。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yzhikang.github.io">yk1ng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yzhikang.github.io/2024/03/21/Linux%E6%93%8D%E4%BD%9C/">https://yzhikang.github.io/2024/03/21/Linux%E6%93%8D%E4%BD%9C/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yzhikang.github.io" target="_blank">yk1ng</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/blog.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入"><img class="cover" src="/img/blog.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SSTI模板注入</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">yk1ng</div><div class="author-info__description">还是做不到嘛</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到yk1ng的技术杂货铺，如果喜欢记得收藏奥～</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.</span> <span class="toc-text">Linux操作系统学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E4%B8%AD%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">Linux中文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">文件目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">文件类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%99%AE%E9%80%9A%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">1.普通文件类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%9B%AE%E5%BD%95%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2.目录文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%9D%97%E8%AE%BE%E5%A4%87%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">3.块设备文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">4.字符设备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%A5%97%E6%8E%A5%E5%AD%97%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">5.套接字文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E7%AE%A1%E9%81%93%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.2.6.</span> <span class="toc-text">6.管道文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E9%93%BE%E6%8E%A5%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.2.7.</span> <span class="toc-text">7.链接文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%AF%B9%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.</span> <span class="toc-text">Linux对文件的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81pwd%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.1.</span> <span class="toc-text">1、pwd命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81ls%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.2.</span> <span class="toc-text">2、ls命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%B3%951%EF%BC%9A-ls"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">用法1：#ls</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%B3%952%EF%BC%9A-ls-%E8%B7%AF%E5%BE%84"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">用法2：#ls +路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%B3%953%EF%BC%9A-ls-%E9%80%89%E9%A1%B9-%E8%B7%AF%E5%BE%84"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">用法3：#ls 选项 路径</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81mkdir%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.3.</span> <span class="toc-text">3、mkdir命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81touch%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.4.</span> <span class="toc-text">4、touch命令</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/Linux%E6%93%8D%E4%BD%9C/" title="Linux操作"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux操作"/></a><div class="content"><a class="title" href="/2024/03/21/Linux%E6%93%8D%E4%BD%9C/" title="Linux操作">Linux操作</a><time datetime="2024-03-20T16:20:14.000Z" title="发表于 2024-03-21 00:20:14">2024-03-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSTI模板注入"/></a><div class="content"><a class="title" href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入">SSTI模板注入</a><time datetime="2024-03-20T09:39:42.000Z" title="发表于 2024-03-20 17:39:42">2024-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2024新的博客"/></a><div class="content"><a class="title" href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客">2024新的博客</a><time datetime="2024-03-20T09:14:16.000Z" title="发表于 2024-03-20 17:14:16">2024-03-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By yk1ng</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="true" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
